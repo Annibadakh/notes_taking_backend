@@ -5,6 +5,7 @@ const cors = require("cors");
 const { sequelize } = require("./models");
 const userRoute = require("./routes/userRoutes");
 const loginRoute = require("./routes/loginRoutes");
+const notesRoute = require("./routes/notesRoute");
 
 const { testEmailConnection } = require("./services/mailService");
 
@@ -17,6 +18,7 @@ app.use(express.json());
 
 app.use("/signup", userRoute);
 app.use("/login", loginRoute);
+app.use("/notes", notesRoute);
 
 app.get("/", async (req, res) => {
     // await testEmailConnection("aniketbadakh1212@gmail.com", "Mail Testing", `<p>This is a test mail form HD Note taking</p>` )

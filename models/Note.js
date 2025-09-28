@@ -8,17 +8,39 @@ const Note = sequelize.define("Note", {
     primaryKey: true,
   },
   title: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(255),
     allowNull: false,
+    validate: {
+      notEmpty: {
+        msg: "Title cannot be empty"
+      },
+      len: {
+        args: [1, 255],
+        msg: "Title must be between 1 and 255 characters"
+      }
+    }
   },
   content: {
-    type: DataTypes.TEXT("long"), // store HTML or JSON string
+    type: DataTypes.TEXT("long"),
     allowNull: true,
   },
   meta: {
     type: DataTypes.JSON,
     allowNull: true,
+    defaultValue: {},
   },
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+  },
+  isArchived: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  isPinned: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  }
 }, {
   timestamps: true,
   tableName: "notes",

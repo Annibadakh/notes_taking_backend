@@ -22,7 +22,7 @@ const loginWithPassword = async (req, res) => {
       return res.status(400).json({ message: "Email and password are required" });
 
     const user = await User.findOne({ where: { email } });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found!! Register first" });
 
     if (!user.isEmailVerified)
       return res.status(403).json({ message: "Email not verified" });
@@ -55,7 +55,7 @@ const verifyLoginOtp = async (req, res) => {
       return res.status(400).json({ message: "Email and OTP are required" });
 
     const user = await User.findOne({ where: { email } });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "User not found!! Register first" });
 
     const now = new Date();
     if (!user.otp || !user.otpExpiry || now > user.otpExpiry) {
@@ -106,7 +106,7 @@ const oauthLogin = async (req, res) => {
     }
 
     const user = await User.findOne({ where: { email, googleId } });
-    if (!user) return res.status(404).json({ message: "OAuth user not found" });
+    if (!user) return res.status(404).json({ message: "User not found!! Register first" });
 
     const jwtToken = generateToken(user);
 

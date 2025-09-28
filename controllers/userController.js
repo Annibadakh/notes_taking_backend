@@ -11,7 +11,7 @@ const client = new OAuth2Client(CLIENT_ID);
 const registerUser = async (req, res) => {
   try {
     const { username, email, password, dob } = req.body;
-    console.log(dob);
+    // console.log(dob);
     if (!username || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -33,6 +33,7 @@ const registerUser = async (req, res) => {
     const newUser = await User.create({
       username,
       email,
+      dob: dob || null,
       password: hashedPassword,
       otp,
       otpExpiry,
