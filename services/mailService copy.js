@@ -1,48 +1,51 @@
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,         
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
-const testEmailConnection = async (email, subject, html, cc) => {
+
+
+const testEmailConnection = async (email, subject, html,  cc) => {
   try {
-    const { data, error } = await resend.emails.send({
-      from: `"HD Note Taking" <onboarding@resend.dev>`, // Using default resend.dev email
+    const mailOptions = {
+      from: `"HD Note Taking" <${process.env.EMAIL_USER}>`,
       to: email,
       cc: cc || undefined,
       subject,
       html,
       attachments: [
         {
-          filename: 'HDlogo2.png',
-          path: './HDlogo2.png', // local file attachment
+          filename: 'HD Note Taking',
+          path: './HDlogo2.png',
+          cid: 'logo'
         },
       ],
       headers: {
         'X-Priority': '3',
-        'X-Mailer': 'Resend',
-      },
-    });
-
-    if (error) {
-      console.error('Failed to send email', error);
-      return {
-        success: false,
-        message: 'Failed to send email',
-        error: error.message,
-      };
-    }
-
+        'X-Mailer': 'NodeMailer'
+      }
+    };
+    const info = await transporter.sendMail(mailOptions);
+    // console.log('Email sent successfully', info);
     return {
       success: true,
       message: 'Email sent successfully',
-      info: data,
+      info: info.response
     };
-  } catch (err) {
-    console.error('Failed to send email', err);
+  } catch (error) {
+    console.error('Failed to send email', error);
     return {
       success: false,
       message: 'Failed to send email',
-      error: err.message,
+      error: error.message
     };
   }
 };
@@ -67,46 +70,37 @@ const sendOtp = async (email, otp, username, msg) => {
     </p>
   </div>
   `;
-  
   try {
-    const { data, error } = await resend.emails.send({
-      from: `"HD Note Taking" <${process.env.EMAIL_USER || 'onboarding@resend.dev'}>`,
+    const mailOptions = {
+      from: `"HD Note Taking" <${process.env.EMAIL_USER}>`,
       to: email,
       subject,
       html,
       attachments: [
         {
-          filename: 'HDlogo2.png',
+          filename: 'HD Note Taking',
           path: './HDlogo2.png',
           cid: 'logo'
         },
       ],
       headers: {
         'X-Priority': '3',
-        'X-Mailer': 'Resend'
+        'X-Mailer': 'NodeMailer'
       }
-    });
-
-    if (error) {
-      console.error('Failed to send OTP', error);
-      return {
-        success: false,
-        message: 'Failed to send OTP',
-        error: error.message,
-      };
-    }
-
+    };
+    const info = await transporter.sendMail(mailOptions);
+    // console.log('Otp sent successfully', info);
     return {
       success: true,
-      message: 'OTP sent successfully',
-      info: data
+      message: 'Otp sent successfully',
+      info: info.response
     };
-  } catch (err) {
-    console.error('Failed to send OTP', err);
+  } catch (error) {
+    console.error('Failed to send Otp', error);
     return {
       success: false,
-      message: 'Failed to send OTP',
-      error: err.message,
+      message: 'Failed to send Otp',
+      error: error.message
     };
   }
 };
@@ -131,46 +125,37 @@ const sendSuccessMail = async (email, username) => {
     </p>
   </div>
   `;
-  
   try {
-    const { data, error } = await resend.emails.send({
-      from: `"HD Note Taking" <${process.env.EMAIL_USER || 'onboarding@resend.dev'}>`,
+    const mailOptions = {
+      from: `"HD Note Taking" <${process.env.EMAIL_USER}>`,
       to: email,
       subject,
       html,
       attachments: [
         {
-          filename: 'HDlogo2.png',
+          filename: 'HD Note Taking',
           path: './HDlogo2.png',
           cid: 'logo'
         },
       ],
       headers: {
         'X-Priority': '3',
-        'X-Mailer': 'Resend'
+        'X-Mailer': 'NodeMailer'
       }
-    });
-
-    if (error) {
-      console.error('Failed to send registration email', error);
-      return {
-        success: false,
-        message: 'Failed to send registration email',
-        error: error.message,
-      };
-    }
-
+    };
+    const info = await transporter.sendMail(mailOptions);
+    // console.log('Registration email sent successfully', info);
     return {
       success: true,
       message: 'Registration email sent successfully',
-      info: data
+      info: info.response
     };
-  } catch (err) {
-    console.error('Failed to send registration email', err);
+  } catch (error) {
+    console.error('Failed to send registration email', error);
     return {
       success: false,
       message: 'Failed to send registration email',
-      error: err.message,
+      error: error.message
     };
   }
 };
@@ -195,48 +180,39 @@ const sendLoginSuccessMail = async (email, username) => {
     </p>
   </div>
   `;
-  
   try {
-    const { data, error } = await resend.emails.send({
-      from: `"HD Note Taking" <${process.env.EMAIL_USER || 'onboarding@resend.dev'}>`,
+    const mailOptions = {
+      from: `"HD Note Taking" <${process.env.EMAIL_USER}>`,
       to: email,
       subject,
       html,
       attachments: [
         {
-          filename: 'HDlogo2.png',
+          filename: 'HD Note Taking',
           path: './HDlogo2.png',
           cid: 'logo'
         },
       ],
       headers: {
         'X-Priority': '3',
-        'X-Mailer': 'Resend'
+        'X-Mailer': 'NodeMailer'
       }
-    });
-
-    if (error) {
-      console.error('Failed to send login success email', error);
-      return {
-        success: false,
-        message: 'Failed to send login success email',
-        error: error.message,
-      };
-    }
-
+    };
+    const info = await transporter.sendMail(mailOptions);
     return {
       success: true,
       message: 'Login success email sent successfully',
-      info: data
+      info: info.response
     };
-  } catch (err) {
-    console.error('Failed to send login success email', err);
+  } catch (error) {
+    console.error('Failed to send login success email', error);
     return {
       success: false,
       message: 'Failed to send login success email',
-      error: err.message,
+      error: error.message
     };
   }
 };
+
 
 module.exports = {testEmailConnection, sendOtp, sendSuccessMail, sendLoginSuccessMail};
