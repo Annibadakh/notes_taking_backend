@@ -14,7 +14,7 @@ const testEmailConnection = async (email, subject, html, cc) => {
       attachments: [
         {
           filename: 'HDlogo.png',
-          path: 'https://drive.google.com/file/d/1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy/view?usp=sharing', // local file attachment
+          path: 'https://drive.google.com/uc?export=download&id=1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy', // local file attachment
         },
       ],
       headers: {
@@ -77,7 +77,7 @@ const sendOtp = async (email, otp, username, msg) => {
       attachments: [
         {
           filename: 'HDlogo.png',
-          path: 'https://drive.google.com/file/d/1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy/view?usp=sharing',
+          path: 'https://drive.google.com/uc?export=download&id=1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy',
           cid: 'logo'
         },
       ],
@@ -124,7 +124,7 @@ const sendSuccessMail = async (email, username) => {
       You can now start creating and managing your notes seamlessly.
     </p>
     <p style="text-align: center; margin: 20px 0;">
-      <a href="https://your-app-url.com/login" style="display: inline-block; padding: 10px 20px; background-color: #4caf50; color: #fff; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
+      <a href="https://app-note-taking.netlify.app/login" style="display: inline-block; padding: 10px 20px; background-color: #4caf50; color: #fff; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
     </p>
     <p style="color: #999; font-size: 14px; text-align: center;">
       We're glad to have you on board!
@@ -141,7 +141,7 @@ const sendSuccessMail = async (email, username) => {
       attachments: [
         {
           filename: 'HDlogo.png',
-          path: 'https://drive.google.com/file/d/1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy/view?usp=sharing',
+          path: 'https://drive.google.com/uc?export=download&id=1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy',
           cid: 'logo'
         },
       ],
@@ -188,7 +188,7 @@ const sendLoginSuccessMail = async (email, username) => {
       If this was you, no further action is required. You can continue managing your notes with ease.
     </p>
     <p style="text-align: center; margin: 20px 0;">
-      <a href="https://your-app-url.com/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #4caf50; color: #fff; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
+      <a href="https://app-note-taking.netlify.app/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #4caf50; color: #fff; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
     </p>
     <p style="color: #999; font-size: 14px; text-align: center;">
       If this login was not initiated by you, please reset your password immediately for security.
@@ -205,7 +205,7 @@ const sendLoginSuccessMail = async (email, username) => {
       attachments: [
         {
           filename: 'HDlogo.png',
-          path: 'https://drive.google.com/file/d/1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy/view?usp=sharing',
+          path: 'https://drive.google.com/uc?export=download&id=1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy',
           cid: 'logo'
         },
       ],
