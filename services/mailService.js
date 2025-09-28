@@ -6,15 +6,15 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const testEmailConnection = async (email, subject, html, cc) => {
   try {
     const { data, error } = await resend.emails.send({
-      from: `"HD Note Taking" <onboarding@resend.dev>`, // Using default resend.dev email
+      from: `"HD Note Taking" <onboarding@resend.dev>`,
       to: email,
       cc: cc || undefined,
       subject,
       html,
       attachments: [
         {
-          filename: 'HDlogo2.png',
-          path: './HDlogo2.png', // local file attachment
+          filename: 'HDlogo.png',
+          path: 'https://drive.google.com/file/d/1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy/view?usp=sharing', // local file attachment
         },
       ],
       headers: {
@@ -76,8 +76,8 @@ const sendOtp = async (email, otp, username, msg) => {
       html,
       attachments: [
         {
-          filename: 'HDlogo2.png',
-          path: './HDlogo2.png',
+          filename: 'HDlogo.png',
+          path: 'https://drive.google.com/file/d/1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy/view?usp=sharing',
           cid: 'logo'
         },
       ],
@@ -140,8 +140,8 @@ const sendSuccessMail = async (email, username) => {
       html,
       attachments: [
         {
-          filename: 'HDlogo2.png',
-          path: './HDlogo2.png',
+          filename: 'HDlogo.png',
+          path: 'https://drive.google.com/file/d/1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy/view?usp=sharing',
           cid: 'logo'
         },
       ],
@@ -204,8 +204,8 @@ const sendLoginSuccessMail = async (email, username) => {
       html,
       attachments: [
         {
-          filename: 'HDlogo2.png',
-          path: './HDlogo2.png',
+          filename: 'HDlogo.png',
+          path: 'https://drive.google.com/file/d/1jF5lxicsQDriMIInkWyw5ByEnMWeI7jy/view?usp=sharing',
           cid: 'logo'
         },
       ],
