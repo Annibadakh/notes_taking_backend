@@ -39,7 +39,7 @@ const loginWithPassword = async (req, res) => {
     user.otpExpiry = otpExpiry;
     await user.save();
 
-    sendOtp(email, otp, user.username, "login to you account");
+    // sendOtp(email, otp, user.username, "login to you account");
 
     return res.status(200).json({ message: "OTP sent to email. Please verify to complete login." });
   } catch (err) {
@@ -72,7 +72,7 @@ const verifyLoginOtp = async (req, res) => {
 
     const token = generateToken(user);
 
-    sendLoginSuccessMail(user.email, user.username);
+    // sendLoginSuccessMail(user.email, user.username);
 
     return res.status(200).json({
       message: "Login successful",
@@ -110,7 +110,7 @@ const oauthLogin = async (req, res) => {
 
     const jwtToken = generateToken(user);
 
-    sendLoginSuccessMail(user.email, user.username);
+    //sendLoginSuccessMail(user.email, user.username);
 
     return res.status(200).json({
       message: "OAuth login successful",

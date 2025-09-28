@@ -41,7 +41,7 @@ const registerUser = async (req, res) => {
     });
     // console.log(newUser);
 
-    sendOtp(email, otp, username, "verify your email address");
+    // sendOtp(email, otp, username, "verify your email address");
 
     return res.status(201).json({
       message: "User registered. OTP sent to email.",
@@ -81,7 +81,7 @@ const verifyOtp = async (req, res) => {
     user.otpExpiry = null;
     await user.save();
 
-    sendSuccessMail(user.email, user.username);
+    // sendSuccessMail(user.email, user.username);
 
     return res.status(200).json({ message: "Email verified successfully" });
   } catch (err) {
@@ -134,7 +134,7 @@ const oauthRegister = async (req, res) => {
       isEmailVerified: true,
     });
 
-    sendSuccessMail(user.email, user.username);
+    // sendSuccessMail(user.email, user.username);
 
     return res.status(201).json({
       message: "OAuth user registered successfully",
