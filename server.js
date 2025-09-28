@@ -21,7 +21,7 @@ app.use("/login", loginRoute);
 app.use("/notes", notesRoute);
 
 app.get("/", async (req, res) => {
-    // await testEmailConnection("aniketbadakh1212@gmail.com", "Mail Testing", `<p>This is a test mail form HD Note taking</p>` )
+    await testEmailConnection("aniketbadakh1212@gmail.com", "Mail Testing", `<p>This is a test mail form HD Note taking</p>` )
   res.status(200).json({ message: "HD Note Taking Server" });
 });
 

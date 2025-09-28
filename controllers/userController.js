@@ -81,7 +81,7 @@ const verifyOtp = async (req, res) => {
     user.otpExpiry = null;
     await user.save();
 
-    await sendSuccessMail(user.email, user.username);
+    sendSuccessMail(user.email, user.username);
 
     return res.status(200).json({ message: "Email verified successfully" });
   } catch (err) {

@@ -41,7 +41,7 @@ const testEmailConnection = async (email, subject, html,  cc) => {
       info: info.response
     };
   } catch (error) {
-    console.error('Failed to send email', error.message);
+    console.error('Failed to send email', error);
     return {
       success: false,
       message: 'Failed to send email',
@@ -96,7 +96,7 @@ const sendOtp = async (email, otp, username, msg) => {
       info: info.response
     };
   } catch (error) {
-    console.error('Failed to send Otp', error.message);
+    console.error('Failed to send Otp', error);
     return {
       success: false,
       message: 'Failed to send Otp',
@@ -151,7 +151,7 @@ const sendSuccessMail = async (email, username) => {
       info: info.response
     };
   } catch (error) {
-    console.error('Failed to send registration email', error.message);
+    console.error('Failed to send registration email', error);
     return {
       success: false,
       message: 'Failed to send registration email',
@@ -205,7 +205,7 @@ const sendLoginSuccessMail = async (email, username) => {
       info: info.response
     };
   } catch (error) {
-    console.error('Failed to send login success email', error.message);
+    console.error('Failed to send login success email', error);
     return {
       success: false,
       message: 'Failed to send login success email',
