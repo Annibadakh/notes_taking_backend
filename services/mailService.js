@@ -70,7 +70,7 @@ const sendOtp = async (email, otp, username, msg) => {
   
   try {
     const { data, error } = await resend.emails.send({
-      from: `"HD Note Taking" <${process.env.EMAIL_USER || 'onboarding@resend.dev'}>`,
+      from: `"HD Note Taking" <onboarding@resend.dev>`,
       to: email,
       subject,
       html,
@@ -134,7 +134,7 @@ const sendSuccessMail = async (email, username) => {
   
   try {
     const { data, error } = await resend.emails.send({
-      from: `"HD Note Taking" <${process.env.EMAIL_USER || 'onboarding@resend.dev'}>`,
+      from: `"HD Note Taking" <onboarding@resend.dev>`,
       to: email,
       subject,
       html,
@@ -198,7 +198,7 @@ const sendLoginSuccessMail = async (email, username) => {
   
   try {
     const { data, error } = await resend.emails.send({
-      from: `"HD Note Taking" <${process.env.EMAIL_USER || 'onboarding@resend.dev'}>`,
+      from: `"HD Note Taking" <onboarding@resend.dev>`,
       to: email,
       subject,
       html,
