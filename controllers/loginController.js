@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 const { OAuth2Client } = require("google-auth-library");
-const { sendOtp, sendLoginSuccessMail } = require("../services/mailService");
+const { sendOtp, sendLoginSuccessMail, sendSuccessMail } = require("../services/mailService");
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
@@ -39,11 +39,11 @@ const loginWithPassword = async (req, res) => {
     user.otpExpiry = otpExpiry;
     await user.save();
 
-    // sendOtp(email, otp, user.username, "login to you account");
+    sendOtp(email, otp, user.username, "login to you account");
 
     return res.status(200).json({ message: "OTP sent to email. Please verify to complete login." });
   } catch (err) {
-    console.error(err);
+    console.error("error to send otp", err);
     return res.status(500).json({ message: "Error logging in", error: err.message });
   }
 };
@@ -72,7 +72,7 @@ const verifyLoginOtp = async (req, res) => {
 
     const token = generateToken(user);
 
-    // sendLoginSuccessMail(user.email, user.username);
+    sendLoginSuccessMail(user.email, user.username);
 
     return res.status(200).json({
       message: "Login successful",
@@ -80,6 +80,7 @@ const verifyLoginOtp = async (req, res) => {
       user: { uuid: user.uuid, username: user.username, email: user.email },
     });
   } catch (err) {
+    console.error("error verifying otp", err);
     return res.status(500).json({ message: "Error verifying login OTP", error: err.message });
   }
 };
@@ -105,12 +106,24 @@ const oauthLogin = async (req, res) => {
       return res.status(400).json({ message: "Invalid Google token" });
     }
 
-    const user = await User.findOne({ where: { email, googleId } });
-    if (!user) return res.status(404).json({ message: "User not found!! Register first" });
+    let user = await User.findOne({ where: { email, googleId } });
+
+    // if (!user) return res.status(404).json({ message: "User not found!! Register first" });
+    if(!user){
+      const username = payload.name || email.split("@")[0];
+      user = await User.create({
+        username,
+        email,
+        googleId,
+        password: null,
+        isEmailVerified: true,
+      });
+      await sendSuccessMail(user.email, user.username);
+    }
 
     const jwtToken = generateToken(user);
 
-    //sendLoginSuccessMail(user.email, user.username);
+    await sendLoginSuccessMail(user.email, user.username);
 
     return res.status(200).json({
       message: "OAuth login successful",
@@ -118,7 +131,7 @@ const oauthLogin = async (req, res) => {
       user: { uuid: user.uuid, username: user.username, email: user.email },
     });
   } catch (err) {
-    console.error(err);
+    console.error("error in oauth login", err);
     return res.status(500).json({ message: "Error logging in via OAuth", error: err.message });
   }
 };

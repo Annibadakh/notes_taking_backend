@@ -1,11 +1,20 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 const { OAuth2Client } = require("google-auth-library");
-const {sendOtp, sendSuccessMail} = require('../services/mailService');
+const {sendOtp, sendSuccessMail, sendLoginSuccessMail} = require('../services/mailService');
 
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
+
+const generateToken = (user) => {
+  return jwt.sign(
+    { uuid: user.uuid, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+};
 
 
 const registerUser = async (req, res) => {
@@ -25,10 +34,10 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log("6 digit otp", otp);
+    // console.log("6 digit otp", otp);
 
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
-    console.log("otp expiry 10 min", otpExpiry);
+    // console.log("otp expiry 10 min", otpExpiry);
 
     const newUser = await User.create({
       username,
@@ -41,15 +50,53 @@ const registerUser = async (req, res) => {
     });
     // console.log(newUser);
 
-    // sendOtp(email, otp, username, "verify your email address");
+    await sendOtp(email, otp, username, "verify your email address");
 
     return res.status(201).json({
       message: "User registered. OTP sent to email.",
       user: { uuid: newUser.uuid, email: newUser.email },
     });
   } catch (err) {
-    console.log(err);
+    console.error("error registering user", err);
     return res.status(500).json({ message: "Error registering user", error: err.message });
+  }
+};
+
+
+const resendOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ where: { email } });
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.isEmailVerified) {
+      return res.status(400).json({ message: "Email already verified" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+
+    user.otp = otp;
+    user.otpExpiry = otpExpiry;
+    await user.save();
+
+    await sendOtp(email, otp, user.username, "verify your email address");
+
+    return res.status(200).json({
+      message: "New OTP sent to email.",
+      user: { uuid: user.uuid, email: user.email },
+    });
+  } catch (err) {
+    console.error("error resending otp", err);
+    return res.status(500).json({ message: "Error resending OTP", error: err.message });
   }
 };
 
@@ -81,10 +128,11 @@ const verifyOtp = async (req, res) => {
     user.otpExpiry = null;
     await user.save();
 
-    // sendSuccessMail(user.email, user.username);
+    await sendSuccessMail(user.email, user.username);
 
     return res.status(200).json({ message: "Email verified successfully" });
   } catch (err) {
+    console.error("error sending otp", err);
     return res.status(500).json({ message: "Error verifying OTP", error: err.message });
   }
 };
@@ -115,9 +163,18 @@ const oauthRegister = async (req, res) => {
 
     let user = await User.findOne({ where: { email } });
 
-    if (user) {
-      return res.status(200).json({
-        message: "OAuth user already exists",
+    if (!user) {
+        user = await User.create({
+        username,
+        email,
+        googleId,
+        password: null,
+        isEmailVerified: true,
+      });
+      await sendSuccessMail(user.email, user.username);
+    } else if(user && user.googleId === null) {
+      return res.status(400).json({
+        message: "Email already exists",
         user: {
           uuid: user.uuid,
           username: user.username,
@@ -125,30 +182,18 @@ const oauthRegister = async (req, res) => {
         },
       });
     }
-
-    user = await User.create({
-      username,
-      email,
-      googleId,
-      password: null,
-      isEmailVerified: true,
-    });
-
-    // sendSuccessMail(user.email, user.username);
-
-    return res.status(201).json({
-      message: "OAuth user registered successfully",
-      user: {
-        uuid: user.uuid,
-        username: user.username,
-        email: user.email,
-      },
+    const jwtToken = generateToken(user);
+    await sendLoginSuccessMail(user.email, user.username);
+    return res.status(200).json({
+      message: "OAuth login successful",
+      token: jwtToken,
+      user: { uuid: user.uuid, username: user.username, email: user.email },
     });
   } catch (err) {
-    console.error(err);
+    console.error("error register oauth ",err);
     return res.status(500).json({ message: "Error with OAuth register", error: err.message });
   }
 };
 
 
-module.exports = { registerUser, oauthRegister, verifyOtp };
+module.exports = { registerUser, oauthRegister, verifyOtp, resendOtp };

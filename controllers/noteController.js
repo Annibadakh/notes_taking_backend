@@ -14,6 +14,18 @@ const getCharacterCount = (htmlContent) => {
   return textContent.length;
 };
 
+const getPlainMeta = (meta) => {
+  if (!meta) return {};
+  if (typeof meta === 'object' && meta !== null) {
+    try {
+      return typeof meta === 'string' ? JSON.parse(meta) : JSON.parse(JSON.stringify(meta));
+    } catch (e) {
+      return {};
+    }
+  }
+  return {};
+};
+
 const createNote = async (req, res) => {
   try {
     const { title, content = "", meta = {}} = req.body;
@@ -28,6 +40,7 @@ const createNote = async (req, res) => {
 
     const characterCount = getCharacterCount(content);
     const wordCount = getWordCount(content);
+    // console.log(characterCount, wordCount, "/////////")
 
     const noteMeta = {
       characterCount,
@@ -43,6 +56,8 @@ const createNote = async (req, res) => {
       meta: noteMeta,
       userId
     });
+
+    // console.log(note, "stored ////////////////////")
 
     res.status(201).json({
       success: true,
@@ -146,6 +161,7 @@ const getNoteById = async (req, res) => {
     })
 
     if (!note) {
+      // console.log("no not //////////")
       return res.status(404).json({
         success: false,
         message: "Note not found"
@@ -185,7 +201,7 @@ const updateNote = async (req, res) => {
         message: "Note not found"
       });
     }
-
+    // console.log(note, "note found ////////////////")
     if (title !== undefined && (!title || title.trim() === "")) {
       return res.status(400).json({
         success: false,
@@ -197,8 +213,10 @@ const updateNote = async (req, res) => {
     const characterCount = getCharacterCount(updatedContent);
     const wordCount = getWordCount(updatedContent);
 
+    const existingMeta = getPlainMeta(note.meta);
+    // console.log(existingMeta, "pplqin text //////////////")
     const updatedMeta = {
-      ...note.meta,
+      ...existingMeta,
       characterCount,
       wordCount,
       lastModified: new Date().toISOString(),
@@ -289,10 +307,12 @@ const toggleArchiveNote = async (req, res) => {
       });
     }
 
+    const existingMeta = getPlainMeta(note.meta);
+    // console.log(existingMeta, "////////////")
     await note.update({
       isArchived: !note.isArchived,
       meta: {
-        ...note.meta,
+        ...existingMeta,
         lastModified: new Date().toISOString()
       }
     });
@@ -331,10 +351,12 @@ const togglePinNote = async (req, res) => {
       });
     }
 
+    const existingMeta = getPlainMeta(note.meta);
+
     await note.update({
       isPinned: !note.isPinned,
       meta: {
-        ...note.meta,
+        ...existingMeta,
         lastModified: new Date().toISOString()
       }
     });
@@ -400,4 +422,3 @@ module.exports = {
   togglePinNote,
   getNoteStats
 };
-
