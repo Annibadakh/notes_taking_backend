@@ -173,7 +173,7 @@ const sendLoginSuccessMail = async (email, username) => {
       If this was you, no further action is required. You can continue managing your notes with ease.
     </p>
     <p style="text-align: center; margin: 20px 0;">
-      <a href="=https://app-note-taking.netlify.app/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #4caf50; color: #fff; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
+      <a href="https://app-note-taking.netlify.app/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #4caf50; color: #fff; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
     </p>
     <p style="color: #999; font-size: 14px; text-align: center;">
       If this login was not initiated by you, please reset your password immediately for security.
